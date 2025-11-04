@@ -1,2 +1,0 @@
-# AlomProjet
-Projet de ALOM
