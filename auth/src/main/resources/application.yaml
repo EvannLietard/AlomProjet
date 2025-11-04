@@ -1,4 +1,14 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: auth
-    port: 8081
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/alom-auth
+      auto-index-creation: true
+
+logging:
+  level:
+    com.alom.auth: DEBUG
