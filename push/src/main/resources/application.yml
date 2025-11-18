@@ -1,0 +1,14 @@
+server:
+  port: 8082
+
+tcp:
+  port: 9999
+
+# Logs
+logging:
+  level:
+    com.example.retour-microservice: INFO
+
+spring:
+  application:
+    name: push
