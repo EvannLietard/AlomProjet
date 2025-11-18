@@ -64,3 +64,8 @@ spring-boot-starter-*.jar
 # Environment variables
 .env
 .env.local
+
+# Docker volumes et MongoDB
+mongodb_data/
+.docker/
+*.lock
