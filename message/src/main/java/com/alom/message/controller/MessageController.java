@@ -2,6 +2,7 @@ package com.alom.message.controller;
 
 import com.alom.message.dto.MessageDTO;
 import com.alom.message.dto.MessageListResponse;
+import com.alom.message.dto.SendMessageRequest;
 import com.alom.message.entity.Message;
 import com.alom.message.service.MessageService;
 import jakarta.validation.Valid;
@@ -26,8 +27,16 @@ public class MessageController {
      * POST /api/messages
      */
     @PostMapping
-    public ResponseEntity<MessageDTO> sendMessage(@Valid @RequestBody MessageDTO messageDTO) {
-        log.info("Requête reçue pour envoyer un message à l'utilisateur: {}", messageDTO.getUserId());
+    public ResponseEntity<MessageDTO> sendMessage(@Valid @RequestBody SendMessageRequest request) {
+        log.info("Requête reçue pour envoyer un message de {} à {}", request.getSenderId(), request.getReceiverId());
+        
+        // Créer le MessageDTO avec userId = receiverId (celui qui va recevoir)
+        MessageDTO messageDTO = MessageDTO.builder()
+                .userId(request.getReceiverId())
+                .sender(request.getSenderId())
+                .content(request.getContent())
+                .build();
+        
         MessageDTO sentMessage = messageService.sendMessage(messageDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(sentMessage);
     }
