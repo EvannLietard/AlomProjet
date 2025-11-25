@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public Boolean validateToken(@Valid @RequestBody TokenValidationRequestDTO request) {
+    public AuthResponseDTO validateToken(@Valid @RequestBody TokenValidationRequestDTO request) {
         return authService.isTokenValid(request);
     }
 }

@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+tcp:
+  port: 9999
+
+# URL du service d'authentification
+auth:
+  service:
+    url: http://localhost:8081
+
+# Logs
+logging:
+  level:
+    com.example.retour-microservice: INFO
+
+spring:
+  application:
+    name: push

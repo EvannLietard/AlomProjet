@@ -6,7 +6,7 @@ spring:
     name: auth
   data:
     mongodb:
-      uri: mongodb://localhost:27017/alom-auth
+      uri: mongodb://alom:alom@localhost:27017/alom-auth?authSource=admin
       auto-index-creation: true
 
 logging:

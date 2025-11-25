@@ -53,7 +53,10 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public Boolean isTokenValid(TokenValidationRequestDTO token) {
-        return userRepository.findByAuthToken(token.getToken()).isPresent();
+    public AuthResponseDTO isTokenValid(TokenValidationRequestDTO token) {
+        UserEntity user = userRepository.findByAuthToken(token.getToken())
+                .orElseThrow(() -> new RuntimeException("Invalid token"));
+
+         return userMapper.toAuthResponse(user);
     }
 }

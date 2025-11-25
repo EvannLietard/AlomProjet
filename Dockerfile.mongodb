@@ -1,0 +1,8 @@
+FROM mongo:7.0
+
+# Exposition du port MongoDB
+EXPOSE 27017
+
+# Commande par défaut pour démarrer MongoDB
+CMD ["mongod"]
+

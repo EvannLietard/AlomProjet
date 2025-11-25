@@ -2,12 +2,28 @@ version: '3.8'
 
 services:
   mongodb:
-    image: mongo:latest
-    container_name: mongodb_message
+
+    image: mongo:7.0
+    container_name: alom-mongodb
+    restart: always
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: alom
+      MONGO_INITDB_ROOT_PASSWORD: alom
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - alom-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  alom-network:
+    driver: bridge
+
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -30,5 +46,3 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       CLUSTER_ID: '5L6g3nShT-eMCtK--X86sw'
 
-volumes:
-  mongodb_data:
