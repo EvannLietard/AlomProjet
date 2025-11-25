@@ -43,7 +43,8 @@ public class MessageConsumer {
                     .content(messageDTO.getContent())
                     .sender(messageDTO.getSender())
                     .timestamp(messageDTO.getTimestamp() != null ? messageDTO.getTimestamp() : LocalDateTime.now())
-                    .status(messageDTO.getStatus() != null ? messageDTO.getStatus() : Message.MessageStatus.DELIVERED)
+                    // Forcer le statut à DELIVERED car le message a été consommé avec succès
+                    .status(Message.MessageStatus.DELIVERED)
                     .build();
             
             // Sauvegarde dans MongoDB
