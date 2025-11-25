@@ -32,4 +32,9 @@ public class AuthController {
     public Boolean validateToken(@Valid @RequestBody TokenValidationRequestDTO request) {
         return authService.isTokenValid(request);
     }
+
+    @PostMapping("/user")
+    public AuthResponseDTO getUserByToken(@Valid @RequestBody TokenValidationRequestDTO request) {
+        return authService.getUserByToken(request);
+    }
 }

@@ -1,33 +1,47 @@
 package com.alom.push.service;
 
+import com.alom.push.client.AuthClient;
+import com.alom.push.dto.TokenValidationRequestDTO;
+import com.alom.push.dto.TokenValidationResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
     
-    private final Map<String, String> tokenStore = new ConcurrentHashMap<>();
-
-    /**
-     * Enregistre un token et son nickname associé
-     */
-    public void registerToken(String token, String nickname) {
-        tokenStore.put(token, nickname);
-        System.out.println("Token enregistré : " + token + " -> " + nickname);
-    }
+    private final AuthClient authClient;
 
     /**
      * Récupère le nickname associé à un token
+     * @param token le token d'authentification
+     * @return le nickname si le token est valide, null sinon
      */
     public String getNickname(String token) {
-        return tokenStore.get(token);
+        try {
+            TokenValidationRequestDTO request = new TokenValidationRequestDTO(token);
+            TokenValidationResponseDTO response = authClient.getUserByToken(request);
+            return response != null ? response.getNickname() : null;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la validation du token : " + e.getMessage());
+            return null;
+        }
     }
 
     /**
-     * Vérifie si un token existe
+     * Vérifie si un token est valide
+     * @param token le token d'authentification
+     * @return true si le token est valide, false sinon
      */
-    public boolean isValidToken(String token) {
-        return tokenStore.containsKey(token);
+    public boolean isTokenValid(String token) {
+        try {
+            TokenValidationRequestDTO request = new TokenValidationRequestDTO(token);
+            Boolean isValid = authClient.validateToken(request);
+            return isValid != null && isValid;
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la validation du token : " + e.getMessage());
+            return false;
+        }
     }
 }
+
