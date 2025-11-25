@@ -6,7 +6,9 @@ spring:
     name: auth
   data:
     mongodb:
-      uri: mongodb://alom:alom@localhost:27017/alom-auth?authSource=admin
+      host: localhost
+      port: 27017
+      database: alom-auth
       auto-index-creation: true
 
 logging:

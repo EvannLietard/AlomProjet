@@ -4,7 +4,9 @@ spring:
   
   data:
     mongodb:
-      uri: mongodb://localhost:27017/alom_messages
+      host: localhost
+      port: 27018
+      database: alom_messages
       auto-index-creation: true
   
   kafka:

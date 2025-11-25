@@ -33,11 +33,11 @@ spring:
             filters:
               - StripPrefix=1
           
-          # TCP Service 
-          - id: tcp-service
+          # Push Service 
+          - id: push-service
             uri: http://localhost:8084
             predicates:
-              - Path=/api/tcp/**
+              - Path=/api/push/**
             filters:
               - StripPrefix=1
 

@@ -1,30 +1,43 @@
 version: '3.8'
 
 services:
-  mongodb:
-
+  # MongoDB pour le service Auth
+  mongodb-auth:
     image: mongo:7.0
-    container_name: alom-mongodb
+    container_name: mongodb-auth
     restart: always
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: alom
-      MONGO_INITDB_ROOT_PASSWORD: alom
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_auth_data:/data/db
     networks:
       - alom-network
 
-volumes:
-  mongodb_data:
-    driver: local
+  # MongoDB pour le service Message
+  mongodb-message:
+    image: mongo:7.0
+    container_name: mongodb-message
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_message_data:/data/db
+    networks:
+      - alom-network
 
-networks:
-  alom-network:
-    driver: bridge
+  # MongoDB pour le service Channel
+  mongodb-channel:
+    image: mongo:7.0
+    container_name: mongodb-channel
+    restart: always
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongodb_channel_data:/data/db
+    networks:
+      - alom-network
 
-
+  # Kafka
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
@@ -45,4 +58,18 @@ networks:
       KAFKA_NUM_PARTITIONS: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       CLUSTER_ID: '5L6g3nShT-eMCtK--X86sw'
+    networks:
+      - alom-network
+
+volumes:
+  mongodb_auth_data:
+    driver: local
+  mongodb_message_data:
+    driver: local
+  mongodb_channel_data:
+    driver: local
+
+networks:
+  alom-network:
+    driver: bridge
 
