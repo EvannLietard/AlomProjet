@@ -10,9 +10,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AuthClient {
 
     @PostMapping("/auth/token")
-    Boolean validateToken(@RequestBody TokenValidationRequestDTO request);
-
-    @PostMapping("/auth/user")
-    TokenValidationResponseDTO getUserByToken(@RequestBody TokenValidationRequestDTO request);
+    TokenValidationResponseDTO validateToken(@RequestBody TokenValidationRequestDTO request);
 }
-

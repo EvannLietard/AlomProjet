@@ -8,6 +8,5 @@ public interface AuthService {
 
     AuthResponseDTO register(AuthRequestDTO request);
     AuthResponseDTO login(AuthRequestDTO request);
-    Boolean isTokenValid(TokenValidationRequestDTO token);
-    AuthResponseDTO getUserByToken(TokenValidationRequestDTO token);
+    AuthResponseDTO isTokenValid(TokenValidationRequestDTO token);
 }
