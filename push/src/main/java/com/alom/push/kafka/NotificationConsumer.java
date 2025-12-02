@@ -1,9 +1,6 @@
 package com.alom.push.kafka;
 
-import com.alom.push.dto.ChannelMessageDTO;
-import com.alom.push.dto.MessageDTO;
 import com.alom.push.tcp.ClientManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,7 +17,6 @@ import java.util.Map;
 public class NotificationConsumer {
 
     private final ClientManager clientManager;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topicPattern = "user-messages-.*", groupId = "push-service-group")
     public void consumeMessage(@Payload Map<String, Object> message,
@@ -53,17 +49,15 @@ public class NotificationConsumer {
             // Check if it's a channel message or private message
             if (message.containsKey("channelId")) {
                 // Channel message
-                ChannelMessageDTO channelMsg = objectMapper.convertValue(message, ChannelMessageDTO.class);
-                return String.format("[CHANNEL:%s] %s: %s",
-                        channelMsg.getChannelName(),
-                        channelMsg.getSenderId(),
-                        channelMsg.getContent());
+                String channelName = (String) message.get("channelName");
+                String sender = (String) message.get("sender");
+                String content = (String) message.get("content");
+                return String.format("[CHANNEL:%s] %s: %s", channelName, sender, content);
             } else {
                 // Private message
-                MessageDTO privateMsg = objectMapper.convertValue(message, MessageDTO.class);
-                return String.format("[PRIVATE] %s: %s",
-                        privateMsg.getSenderId(),
-                        privateMsg.getContent());
+                String sender = (String) message.get("sender");
+                String content = (String) message.get("content");
+                return String.format("[PRIVATE] %s: %s", sender, content);
             }
         } catch (Exception e) {
             log.error("Error formatting message: {}", e.getMessage());
