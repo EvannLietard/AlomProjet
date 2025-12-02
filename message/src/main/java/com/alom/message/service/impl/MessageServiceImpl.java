@@ -36,6 +36,21 @@ public class MessageServiceImpl implements MessageService {
             messageDTO.setStatus(Message.MessageStatus.SENT);
         }
         
+        // Sauvegarder le message dans MongoDB
+        Message message = Message.builder()
+                .userId(messageDTO.getUserId())
+                .content(messageDTO.getContent())
+                .sender(messageDTO.getSender())
+                .timestamp(messageDTO.getTimestamp())
+                .status(messageDTO.getStatus())
+                .build();
+        
+        Message savedMessage = messageRepository.save(message);
+        log.info("Message sauvegardé dans MongoDB avec l'ID: {}", savedMessage.getId());
+        
+        // Mettre à jour le DTO avec l'ID généré
+        messageDTO.setId(savedMessage.getId());
+        
         // Nom du topic spécifique à l'utilisateur
         // Le topic sera créé automatiquement par Kafka lors du premier envoi
         String topicName = "user-messages-" + messageDTO.getUserId();

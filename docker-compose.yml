@@ -7,7 +7,7 @@ services:
     container_name: mongodb-auth
     restart: always
     ports:
-      - "27017:27017"
+      - "27017:27017"  # Exposé pour accès direct en dev
     volumes:
       - mongodb_auth_data:/data/db
     networks:
@@ -19,7 +19,7 @@ services:
     container_name: mongodb-message
     restart: always
     ports:
-      - "27018:27017"
+      - "27018:27017"  # Exposé pour accès direct en dev
     volumes:
       - mongodb_message_data:/data/db
     networks:
@@ -31,7 +31,7 @@ services:
     container_name: mongodb-channel
     restart: always
     ports:
-      - "27019:27017"
+      - "27019:27017"  # Exposé pour accès direct en dev
     volumes:
       - mongodb_channel_data:/data/db
     networks:
@@ -42,7 +42,7 @@ services:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
     ports:
-      - "9092:9092"
+      - "9092:9092"  # Exposé pour accès direct en dev
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -72,4 +72,3 @@ volumes:
 networks:
   alom-network:
     driver: bridge
-
