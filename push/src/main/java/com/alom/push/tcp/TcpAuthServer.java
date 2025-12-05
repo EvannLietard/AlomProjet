@@ -1,5 +1,6 @@
 package com.alom.push.tcp;
 
+import com.alom.push.dto.TokenValidationResponseDTO;
 import com.alom.push.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,20 +83,20 @@ public class TcpAuthServer {
             token = token.trim();
             System.out.println("Token reçu : " + token);
             
-            String nickname = tokenService.getNickname(token);
+            TokenValidationResponseDTO tokenValid = this.tokenService.isTokenValid(token);
             
-            if (nickname != null) {
+            if (tokenValid != null) {
                 client.sendMessage("Authentification réussie !");
-                client.sendMessage("Bienvenue " + nickname + " !");
-                System.out.println("Auth OK : " + nickname);
+                client.sendMessage("Bienvenue " + tokenValid.getNickname() + " !");
+                System.out.println("Auth OK : " + tokenValid.getNickname());
 
-                Client authenticatedClient = new Client(clientSocket, nickname);
+                Client authenticatedClient = new Client(clientSocket, tokenValid.getNickname());
                 clientManager.addClient(authenticatedClient);
                 client = authenticatedClient;
 
                 String line;
                 while ((line = client.readMessage()) != null) {
-                    System.out.println("Message reçu de " + nickname + " : " + line);
+                    System.out.println("Message reçu de " + tokenValid.getNickname() + " : " + line);
                 }
 
             } else {

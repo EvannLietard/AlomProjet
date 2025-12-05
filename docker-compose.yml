@@ -1,25 +1,74 @@
 version: '3.8'
 
 services:
-  mongodb:
+  # MongoDB pour le service Auth
+  mongodb-auth:
     image: mongo:7.0
-    container_name: alom-mongodb
+    container_name: mongodb-auth
     restart: always
     ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: alom
-      MONGO_INITDB_ROOT_PASSWORD: alom
+      - "27017:27017"  # Exposé pour accès direct en dev
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_auth_data:/data/db
+    networks:
+      - alom-network
+
+  # MongoDB pour le service Message
+  mongodb-message:
+    image: mongo:7.0
+    container_name: mongodb-message
+    restart: always
+    ports:
+      - "27018:27017"  # Exposé pour accès direct en dev
+    volumes:
+      - mongodb_message_data:/data/db
+    networks:
+      - alom-network
+
+  # MongoDB pour le service Channel
+  mongodb-channel:
+    image: mongo:7.0
+    container_name: mongodb-channel
+    restart: always
+    ports:
+      - "27019:27017"  # Exposé pour accès direct en dev
+    volumes:
+      - mongodb_channel_data:/data/db
+    networks:
+      - alom-network
+
+  # Kafka
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"  # Exposé pour accès direct en dev
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      CLUSTER_ID: '5L6g3nShT-eMCtK--X86sw'
     networks:
       - alom-network
 
 volumes:
-  mongodb_data:
+  mongodb_auth_data:
+    driver: local
+  mongodb_message_data:
+    driver: local
+  mongodb_channel_data:
     driver: local
 
 networks:
   alom-network:
     driver: bridge
-

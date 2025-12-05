@@ -13,33 +13,25 @@ spring:
           - id: auth-service
             uri: http://localhost:8081
             predicates:
-              - Path=/api/auth/**
-            filters:
-              - StripPrefix=1
+              - Path=/auth/**
           
           # Message Service
           - id: message-service
             uri: http://localhost:8082
             predicates:
               - Path=/api/messages/**
-            filters:
-              - StripPrefix=1
           
           # Channel Service 
           - id: channel-service
             uri: http://localhost:8083
             predicates:
               - Path=/api/channels/**
-            filters:
-              - StripPrefix=1
           
-          # TCP Service 
-          - id: tcp-service
+          # Push Service 
+          - id: push-service
             uri: http://localhost:8084
             predicates:
-              - Path=/api/tcp/**
-            filters:
-              - StripPrefix=1
+              - Path=/api/push/**
 
 # Configuration des logs
 logging:

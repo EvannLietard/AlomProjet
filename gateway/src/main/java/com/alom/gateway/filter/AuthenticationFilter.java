@@ -68,8 +68,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private boolean isAuthRequired(String path) {
         return !path.equals("/") 
                 && !path.equals("/health")
-                && !path.startsWith("/api/auth/register")
-                && !path.startsWith("/api/auth/login");
+                && !path.startsWith("/auth/register")
+                && !path.startsWith("/auth/login");
     }
     
     /**
@@ -93,16 +93,16 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
             
             // Appeler l'endpoint de validation (POST /auth/token)
-            org.springframework.http.ResponseEntity<Boolean> response = restTemplate.exchange(
+            // Le service retourne un AuthResponseDTO avec le token si valide, ou une erreur 401 si invalide
+            org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(
                 validateUrl,
                 org.springframework.http.HttpMethod.POST,
                 entity,
-                Boolean.class
+                String.class
             );
             
-            // Si le service répond 200 et body = true, le token est valide
-            boolean isValid = response.getStatusCode().is2xxSuccessful() && 
-                            Boolean.TRUE.equals(response.getBody());
+            // Si le service répond 200, le token est valide
+            boolean isValid = response.getStatusCode().is2xxSuccessful();
             logger.debug("Token validation result: {}", isValid);
             return isValid;
             
