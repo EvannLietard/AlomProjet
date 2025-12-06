@@ -4,10 +4,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +23,6 @@ import java.io.IOException;
 @Order(2)
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
     private final RestTemplate restTemplate = new RestTemplate();
     
     @Value("${auth.service.url:http://localhost:8081}")
@@ -43,7 +45,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             String token = request.getHeader("Authorization");
             
             if (token == null || token.trim().isEmpty()) {
-                logger.warn("Unauthorized access attempt to {} - No token provided", path);
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Token d'authentification manquant\"}");
@@ -52,14 +53,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             
             // Vérifier le token auprès du service d'authentification
             if (!validateTokenWithAuthService(token)) {
-                logger.warn("Invalid token for request to {}", path);
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Token invalide ou expiré\"}");
                 return;
             }
-            
-            logger.debug("Token validated successfully for request to {}", path);
         }
         
         filterChain.doFilter(request, response);
@@ -67,7 +65,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     
     private boolean isAuthRequired(String path) {
         return !path.equals("/") 
-                && !path.equals("/health")
                 && !path.startsWith("/auth/register")
                 && !path.startsWith("/auth/login");
     }
@@ -82,37 +79,31 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             // Appel au service d'authentification pour valider le token
             String validateUrl = authServiceUrl + "/auth/token";
             
-            logger.debug("Validating token with Auth Service at: {}", validateUrl);
-            
             // Créer le body avec le token
             String requestBody = "{\"token\":\"" + token + "\"}";
             
             // Créer les headers
-            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-            org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
             
             // Appeler l'endpoint de validation (POST /auth/token)
             // Le service retourne un AuthResponseDTO avec le token si valide, ou une erreur 401 si invalide
-            org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(
+            ResponseEntity<String> response = restTemplate.exchange(
                 validateUrl,
-                org.springframework.http.HttpMethod.POST,
+                HttpMethod.POST,
                 entity,
                 String.class
             );
             
             // Si le service répond 200, le token est valide
-            boolean isValid = response.getStatusCode().is2xxSuccessful();
-            logger.debug("Token validation result: {}", isValid);
-            return isValid;
+            return response.getStatusCode().is2xxSuccessful();
             
         } catch (HttpClientErrorException e) {
             // 401 ou 403 = token invalide
-            logger.warn("Token validation failed with status: {}", e.getStatusCode());
             return false;
         } catch (Exception e) {
             // Erreur de connexion au service d'authentification
-            logger.error("Error connecting to Auth Service: {}", e.getMessage());
             // Par sécurité, on refuse l'accès si le service Auth est inaccessible
             return false;
         }

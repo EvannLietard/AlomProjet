@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SendMessageRequest {
     
-    @NotBlank(message = "Sender ID is required")
-    private String senderId;
+    @NotBlank(message = "Sender nickname is required")
+    private String senderNickname;
     
-    @NotBlank(message = "Receiver ID is required")
-    private String receiverId;
+    @NotBlank(message = "Receiver nickname is required")
+    private String receiverNickname;
     
     @NotBlank(message = "Content is required")
     private String content;

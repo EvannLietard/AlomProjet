@@ -19,19 +19,19 @@ spring:
           - id: message-service
             uri: http://localhost:8082
             predicates:
-              - Path=/api/messages/**
+              - Path=/messages/**
           
           # Channel Service 
           - id: channel-service
             uri: http://localhost:8083
             predicates:
-              - Path=/api/channels/**
+              - Path=/channels/**
           
           # Push Service 
           - id: push-service
             uri: http://localhost:8084
             predicates:
-              - Path=/api/push/**
+              - Path=/push/**
 
 # Configuration des logs
 logging:

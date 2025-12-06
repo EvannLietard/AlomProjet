@@ -5,16 +5,14 @@ import com.alom.channel.dto.SendMessageRequest;
 import com.alom.channel.service.ChannelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
-@RequestMapping("/api/channels")
+@RequestMapping("/channels")
 @RequiredArgsConstructor
 public class ChannelController {
     
@@ -26,7 +24,6 @@ public class ChannelController {
      */
     @PostMapping
     public ResponseEntity<ChannelDTO> createChannel(@Valid @RequestBody ChannelDTO channelDTO) {
-        log.info("Requête reçue pour créer un channel: {}", channelDTO.getName());
         ChannelDTO createdChannel = channelService.createChannel(channelDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdChannel);
     }
@@ -37,7 +34,6 @@ public class ChannelController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ChannelDTO> getChannelById(@PathVariable String id) {
-        log.info("Requête reçue pour récupérer le channel avec l'ID: {}", id);
         ChannelDTO channel = channelService.getChannelById(id);
         return ResponseEntity.ok(channel);
     }
@@ -48,7 +44,6 @@ public class ChannelController {
      */
     @GetMapping("/name/{name}")
     public ResponseEntity<ChannelDTO> getChannelByName(@PathVariable String name) {
-        log.info("Requête reçue pour récupérer le channel avec le nom: {}", name);
         ChannelDTO channel = channelService.getChannelByName(name);
         return ResponseEntity.ok(channel);
     }
@@ -59,7 +54,6 @@ public class ChannelController {
      */
     @GetMapping
     public ResponseEntity<List<ChannelDTO>> getAllChannels() {
-        log.info("Requête reçue pour récupérer tous les channels");
         List<ChannelDTO> channels = channelService.getAllChannels();
         return ResponseEntity.ok(channels);
     }
@@ -73,7 +67,6 @@ public class ChannelController {
     public ResponseEntity<ChannelDTO> subscribeUser(
             @PathVariable String channelId,
             @PathVariable String userId) {
-        log.info("Requête reçue pour abonner l'utilisateur {} au channel {}", userId, channelId);
         ChannelDTO channel = channelService.subscribeUser(channelId, userId);
         return ResponseEntity.ok(channel);
     }
@@ -86,7 +79,6 @@ public class ChannelController {
     public ResponseEntity<ChannelDTO> unsubscribeUser(
             @PathVariable String channelId,
             @PathVariable String userId) {
-        log.info("Requête reçue pour désabonner l'utilisateur {} du channel {}", userId, channelId);
         ChannelDTO channel = channelService.unsubscribeUser(channelId, userId);
         return ResponseEntity.ok(channel);
     }
@@ -97,7 +89,6 @@ public class ChannelController {
      */
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ChannelDTO>> getChannelsBySubscriber(@PathVariable String userId) {
-        log.info("Requête reçue pour récupérer les channels de l'utilisateur: {}", userId);
         List<ChannelDTO> channels = channelService.getChannelsBySubscriber(userId);
         return ResponseEntity.ok(channels);
     }
@@ -110,16 +101,7 @@ public class ChannelController {
     public ResponseEntity<Void> sendMessageToChannel(
             @PathVariable String channelId,
             @Valid @RequestBody SendMessageRequest request) {
-        log.info("Requête reçue pour envoyer un message au channel: {}", channelId);
-        channelService.sendMessageToChannel(channelId, request.getContent(), request.getSender());
+        channelService.sendMessageToChannel(channelId, request.getContent(), request.getSenderNickname());
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-    }
-    
-    /**
-     * Health check endpoint
-     */
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Channel service is running");
     }
 }

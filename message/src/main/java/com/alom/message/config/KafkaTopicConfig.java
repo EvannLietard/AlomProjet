@@ -1,6 +1,5 @@
 package com.alom.message.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-@Slf4j
 @Configuration
 public class KafkaTopicConfig {
 
@@ -45,16 +43,11 @@ public class KafkaTopicConfig {
             Set<String> existingTopics = adminClient.listTopics().names().get();
             
             if (!existingTopics.contains(topicName)) {
-                log.info("Création du topic: {}", topicName);
                 NewTopic newTopic = new NewTopic(topicName, numPartitions, replicationFactor);
                 adminClient.createTopics(Collections.singleton(newTopic)).all().get();
-                log.info("Topic créé avec succès: {}", topicName);
-            } else {
-                log.debug("Le topic existe déjà: {}", topicName);
             }
             
         } catch (InterruptedException | ExecutionException e) {
-            log.error("Erreur lors de la création du topic {}: {}", topicName, e.getMessage());
             Thread.currentThread().interrupt();
         }
     }

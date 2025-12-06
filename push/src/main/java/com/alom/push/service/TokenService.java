@@ -5,12 +5,10 @@ import com.alom.push.dto.TokenValidationRequestDTO;
 import com.alom.push.dto.TokenValidationResponseDTO;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TokenService {
     
     private final AuthClient authClient;
@@ -25,10 +23,8 @@ public class TokenService {
             TokenValidationRequestDTO request = new TokenValidationRequestDTO(token);
             return this.authClient.validateToken(request);
         } catch (FeignException e) {
-            log.error("Erreur lors de la validation du token: {}", e.getMessage());
             return null;
         } catch (Exception e) {
-            log.error("Erreur inattendue lors de la validation du token: {}", e.getMessage(), e);
             return null;
         }
     }

@@ -7,16 +7,14 @@ import com.alom.message.entity.Message;
 import com.alom.message.service.MessageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
-@RequestMapping("/api/messages")
+@RequestMapping("/messages")
 @RequiredArgsConstructor
 public class MessageController {
 
@@ -28,12 +26,10 @@ public class MessageController {
      */
     @PostMapping
     public ResponseEntity<MessageDTO> sendMessage(@Valid @RequestBody SendMessageRequest request) {
-        log.info("Requête reçue pour envoyer un message de {} à {}", request.getSenderId(), request.getReceiverId());
-        
-        // Créer le MessageDTO avec userId = receiverId (celui qui va recevoir)
+        // Créer le MessageDTO avec receiverNickname = receiverNickname (celui qui va recevoir)
         MessageDTO messageDTO = MessageDTO.builder()
-                .userId(request.getReceiverId())
-                .sender(request.getSenderId())
+                .receiverNickname(request.getReceiverNickname())
+                .senderNickname(request.getSenderNickname())
                 .content(request.getContent())
                 .build();
         
@@ -47,7 +43,6 @@ public class MessageController {
      */
     @GetMapping("/user/{userId}")
     public ResponseEntity<MessageListResponse> getMessagesByUserId(@PathVariable String userId) {
-        log.info("Requête reçue pour récupérer les messages de l'utilisateur: {}", userId);
         MessageListResponse response = messageService.getMessagesByUserId(userId);
         return ResponseEntity.ok(response);
     }
@@ -60,17 +55,7 @@ public class MessageController {
     public ResponseEntity<List<MessageDTO>> getMessagesByUserIdAndStatus(
             @PathVariable String userId,
             @PathVariable Message.MessageStatus status) {
-        log.info("Requête reçue pour récupérer les messages avec le statut {} de l'utilisateur: {}", 
-                status, userId);
         List<MessageDTO> messages = messageService.getMessagesByUserIdAndStatus(userId, status);
         return ResponseEntity.ok(messages);
-    }
-
-    /**
-     * Health check endpoint
-     */
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Message service is running");
     }
 }
