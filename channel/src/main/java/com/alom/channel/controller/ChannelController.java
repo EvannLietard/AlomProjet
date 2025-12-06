@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/channels")
+@RequestMapping("/channels")
 @RequiredArgsConstructor
 public class ChannelController {
     

@@ -28,31 +28,31 @@ public class GatewayController {
         
         Map<String, String> authService = new HashMap<>();
         authService.put("name", "Authentication Service");
-        authService.put("path", "/api/auth/**");
+        authService.put("path", "/auth/**");
         authService.put("port", "8081");
         authService.put("description", "Gestion des utilisateurs et authentification");
         services.put("auth", authService);
         
         Map<String, String> messageService = new HashMap<>();
         messageService.put("name", "Message Service");
-        messageService.put("path", "/api/messages/**");
+        messageService.put("path", "/messages/**");
         messageService.put("port", "8082");
         messageService.put("description", "Gestion des messages");
         services.put("messages", messageService);
         
         Map<String, String> channelService = new HashMap<>();
         channelService.put("name", "Channel Service");
-        channelService.put("path", "/api/channels/**");
+        channelService.put("path", "/channels/**");
         channelService.put("port", "8083");
         channelService.put("description", "Gestion des channels");
         services.put("channels", channelService);
         
-        Map<String, String> tcpService = new HashMap<>();
-        tcpService.put("name", "TCP Service");
-        tcpService.put("path", "/api/tcp/**");
-        tcpService.put("port", "8084");
-        tcpService.put("description", "Interface TCP pour communication retour");
-        services.put("tcp", tcpService);
+        Map<String, String> pushService = new HashMap<>();
+        pushService.put("name", "Push Service");
+        pushService.put("path", "/push/**");
+        pushService.put("port", "8084");
+        pushService.put("description", "Service de notifications push");
+        services.put("push", pushService);
         
         response.put("services", services);
         
