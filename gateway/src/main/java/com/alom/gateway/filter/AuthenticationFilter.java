@@ -5,7 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.client.RestTemplate;
@@ -78,15 +83,15 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             String requestBody = "{\"token\":\"" + token + "\"}";
             
             // Créer les headers
-            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-            org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
             
             // Appeler l'endpoint de validation (POST /auth/token)
             // Le service retourne un AuthResponseDTO avec le token si valide, ou une erreur 401 si invalide
-            org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(
+            ResponseEntity<String> response = restTemplate.exchange(
                 validateUrl,
-                org.springframework.http.HttpMethod.POST,
+                HttpMethod.POST,
                 entity,
                 String.class
             );
