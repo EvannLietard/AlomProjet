@@ -23,6 +23,8 @@
         <module>gateway</module>
         <module>auth</module>
         <module>push</module>
+        <module>channel</module>
+        <module>message</module>
     </modules>
 
     <properties>
