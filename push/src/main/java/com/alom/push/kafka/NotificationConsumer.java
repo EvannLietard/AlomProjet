@@ -2,7 +2,6 @@ package com.alom.push.kafka;
 
 import com.alom.push.tcp.ClientManager;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -13,7 +12,6 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class NotificationConsumer {
 
     private final ClientManager clientManager;
@@ -24,11 +22,9 @@ public class NotificationConsumer {
         try {
             // Extract userId from topic name (user-messages-{userId})
             String userId = topic.replace("user-messages-", "");
-            log.info("Received message from topic: {} for userId: {}", topic, userId);
 
             // Check if the user is connected
             if (!clientManager.isClientConnected(userId)) {
-                log.info("User {} is not connected, message will not be delivered", userId);
                 return;
             }
 
@@ -37,10 +33,9 @@ public class NotificationConsumer {
 
             // Send message to TCP client
             clientManager.sendMessageToClient(userId, formattedMessage);
-            log.info("Message sent to user {}: {}", userId, formattedMessage);
 
         } catch (Exception e) {
-            log.error("Error processing message from topic {}: {}", topic, e.getMessage(), e);
+            // Error processing message
         }
     }
 
@@ -60,7 +55,6 @@ public class NotificationConsumer {
                 return String.format("[PRIVATE] %s: %s", sender, content);
             }
         } catch (Exception e) {
-            log.error("Error formatting message: {}", e.getMessage());
             return message.toString();
         }
     }

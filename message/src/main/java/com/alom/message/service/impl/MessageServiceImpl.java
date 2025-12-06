@@ -6,7 +6,6 @@ import com.alom.message.entity.Message;
 import com.alom.message.repository.MessageRepository;
 import com.alom.message.service.MessageService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
@@ -24,8 +22,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDTO sendMessage(MessageDTO messageDTO) {
-        log.info("Envoi du message pour l'utilisateur: {}", messageDTO.getUserId());
-        
         // Définir le timestamp si non défini
         if (messageDTO.getTimestamp() == null) {
             messageDTO.setTimestamp(LocalDateTime.now());
@@ -46,7 +42,6 @@ public class MessageServiceImpl implements MessageService {
                 .build();
         
         Message savedMessage = messageRepository.save(message);
-        log.info("Message sauvegardé dans MongoDB avec l'ID: {}", savedMessage.getId());
         
         // Mettre à jour le DTO avec l'ID généré
         messageDTO.setId(savedMessage.getId());
@@ -56,24 +51,13 @@ public class MessageServiceImpl implements MessageService {
         String topicName = "user-messages-" + messageDTO.getUserId();
         
         // Envoi du message dans Kafka
-        kafkaTemplate.send(topicName, messageDTO.getUserId(), messageDTO)
-                .whenComplete((result, ex) -> {
-                    if (ex == null) {
-                        log.info("Message envoyé avec succès au topic {}: offset={}", 
-                                topicName, result.getRecordMetadata().offset());
-                    } else {
-                        log.error("Erreur lors de l'envoi du message au topic {}: {}", 
-                                topicName, ex.getMessage());
-                    }
-                });
+        kafkaTemplate.send(topicName, messageDTO.getUserId(), messageDTO);
         
         return messageDTO;
     }
 
     @Override
     public MessageListResponse getMessagesByUserId(String userId) {
-        log.info("Récupération des messages pour l'utilisateur: {}", userId);
-        
         List<Message> messages = messageRepository.findByUserIdOrderByTimestampDesc(userId);
         long totalCount = messageRepository.countByUserId(userId);
         
@@ -91,13 +75,10 @@ public class MessageServiceImpl implements MessageService {
     public void createUserTopicIfNotExists(String userId) {
         // Cette méthode n'est plus nécessaire avec l'auto-création de Kafka
         // Le topic sera créé automatiquement lors du premier envoi de message
-        log.debug("Topic user-messages-{} sera créé automatiquement par Kafka si nécessaire", userId);
     }
 
     @Override
     public List<MessageDTO> getMessagesByUserIdAndStatus(String userId, Message.MessageStatus status) {
-        log.info("Récupération des messages avec le statut {} pour l'utilisateur: {}", status, userId);
-        
         List<Message> messages = messageRepository.findByUserIdAndStatus(userId, status);
         
         return messages.stream()
