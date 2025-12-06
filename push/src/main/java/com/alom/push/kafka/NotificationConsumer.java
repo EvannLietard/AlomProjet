@@ -45,14 +45,14 @@ public class NotificationConsumer {
             if (message.containsKey("channelId")) {
                 // Channel message
                 String channelName = (String) message.get("channelName");
-                String sender = (String) message.get("sender");
+                String senderNickname = (String) message.get("senderNickname");
                 String content = (String) message.get("content");
-                return String.format("[CHANNEL:%s] %s: %s", channelName, sender, content);
+                return String.format("[CHANNEL:%s] %s: %s", channelName, senderNickname, content);
             } else {
                 // Private message
-                String sender = (String) message.get("sender");
+                String senderNickname = (String) message.get("senderNickname");
                 String content = (String) message.get("content");
-                return String.format("[PRIVATE] %s: %s", sender, content);
+                return String.format("[PRIVATE] %s: %s", senderNickname, content);
             }
         } catch (Exception e) {
             return message.toString();

@@ -19,9 +19,9 @@ public class Message {
     @Id
     private String id;
     
-    private String userId;
+    private String receiverNickname;
     private String content;
-    private String sender;
+    private String senderNickname;
     private LocalDateTime timestamp;
     private MessageStatus status;
     

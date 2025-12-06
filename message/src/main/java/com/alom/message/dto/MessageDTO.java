@@ -17,14 +17,14 @@ public class MessageDTO {
     
     private String id;
     
-    @NotBlank(message = "User ID is required")
-    private String userId;
+    @NotBlank(message = "Receiver nickname is required")
+    private String receiverNickname;
     
     @NotBlank(message = "Content is required")
     private String content;
     
-    @NotBlank(message = "Sender is required")
-    private String sender;
+    @NotBlank(message = "Sender nickname is required")
+    private String senderNickname;
     
     private LocalDateTime timestamp;
     private MessageStatus status;

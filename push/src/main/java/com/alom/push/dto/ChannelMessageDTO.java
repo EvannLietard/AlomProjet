@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ChannelMessageDTO {
     private String channelId;
     private String channelName;
-    private String senderId;
+    private String senderNickname;
     private String content;
     private LocalDateTime timestamp;
 }

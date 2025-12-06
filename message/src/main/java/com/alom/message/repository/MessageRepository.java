@@ -12,15 +12,15 @@ public interface MessageRepository extends MongoRepository<Message, String> {
     /**
      * Récupère tous les messages d'un utilisateur
      */
-    List<Message> findByUserIdOrderByTimestampDesc(String userId);
+    List<Message> findByReceiverNicknameOrderByTimestampDesc(String receiverNickname);
     
     /**
      * Récupère les messages d'un utilisateur avec un statut spécifique
      */
-    List<Message> findByUserIdAndStatus(String userId, Message.MessageStatus status);
+    List<Message> findByReceiverNicknameAndStatus(String receiverNickname, Message.MessageStatus status);
     
     /**
      * Compte le nombre de messages d'un utilisateur
      */
-    long countByUserId(String userId);
+    long countByReceiverNickname(String receiverNickname);
 }

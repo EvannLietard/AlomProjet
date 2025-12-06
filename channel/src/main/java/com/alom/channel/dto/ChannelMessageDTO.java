@@ -24,7 +24,7 @@ public class ChannelMessageDTO {
     private String content;
     
     @NotBlank(message = "L'expéditeur est obligatoire")
-    private String sender;
+    private String senderNickname;
     
     private LocalDateTime timestamp;
 }

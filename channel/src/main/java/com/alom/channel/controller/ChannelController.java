@@ -101,7 +101,7 @@ public class ChannelController {
     public ResponseEntity<Void> sendMessageToChannel(
             @PathVariable String channelId,
             @Valid @RequestBody SendMessageRequest request) {
-        channelService.sendMessageToChannel(channelId, request.getContent(), request.getSender());
+        channelService.sendMessageToChannel(channelId, request.getContent(), request.getSenderNickname());
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

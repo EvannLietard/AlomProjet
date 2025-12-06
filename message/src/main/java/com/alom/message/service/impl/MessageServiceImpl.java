@@ -34,9 +34,9 @@ public class MessageServiceImpl implements MessageService {
         
         // Sauvegarder le message dans MongoDB
         Message message = Message.builder()
-                .userId(messageDTO.getUserId())
+                .receiverNickname(messageDTO.getReceiverNickname())
                 .content(messageDTO.getContent())
-                .sender(messageDTO.getSender())
+                .senderNickname(messageDTO.getSenderNickname())
                 .timestamp(messageDTO.getTimestamp())
                 .status(messageDTO.getStatus())
                 .build();
@@ -48,18 +48,18 @@ public class MessageServiceImpl implements MessageService {
         
         // Nom du topic spécifique à l'utilisateur
         // Le topic sera créé automatiquement par Kafka lors du premier envoi
-        String topicName = "user-messages-" + messageDTO.getUserId();
+        String topicName = "user-messages-" + messageDTO.getReceiverNickname();
         
         // Envoi du message dans Kafka
-        kafkaTemplate.send(topicName, messageDTO.getUserId(), messageDTO);
+        kafkaTemplate.send(topicName, messageDTO.getReceiverNickname(), messageDTO);
         
         return messageDTO;
     }
 
     @Override
     public MessageListResponse getMessagesByUserId(String userId) {
-        List<Message> messages = messageRepository.findByUserIdOrderByTimestampDesc(userId);
-        long totalCount = messageRepository.countByUserId(userId);
+        List<Message> messages = messageRepository.findByReceiverNicknameOrderByTimestampDesc(userId);
+        long totalCount = messageRepository.countByReceiverNickname(userId);
         
         List<MessageDTO> messageDTOs = messages.stream()
                 .map(this::convertToDTO)
@@ -79,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageDTO> getMessagesByUserIdAndStatus(String userId, Message.MessageStatus status) {
-        List<Message> messages = messageRepository.findByUserIdAndStatus(userId, status);
+        List<Message> messages = messageRepository.findByReceiverNicknameAndStatus(userId, status);
         
         return messages.stream()
                 .map(this::convertToDTO)
@@ -92,9 +92,9 @@ public class MessageServiceImpl implements MessageService {
     private MessageDTO convertToDTO(Message message) {
         return MessageDTO.builder()
                 .id(message.getId())
-                .userId(message.getUserId())
+                .receiverNickname(message.getReceiverNickname())
                 .content(message.getContent())
-                .sender(message.getSender())
+                .senderNickname(message.getSenderNickname())
                 .timestamp(message.getTimestamp())
                 .status(message.getStatus())
                 .build();

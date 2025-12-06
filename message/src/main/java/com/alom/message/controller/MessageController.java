@@ -26,10 +26,10 @@ public class MessageController {
      */
     @PostMapping
     public ResponseEntity<MessageDTO> sendMessage(@Valid @RequestBody SendMessageRequest request) {
-        // Créer le MessageDTO avec userId = receiverId (celui qui va recevoir)
+        // Créer le MessageDTO avec receiverNickname = receiverNickname (celui qui va recevoir)
         MessageDTO messageDTO = MessageDTO.builder()
-                .userId(request.getReceiverId())
-                .sender(request.getSenderId())
+                .receiverNickname(request.getReceiverNickname())
+                .senderNickname(request.getSenderNickname())
                 .content(request.getContent())
                 .build();
         

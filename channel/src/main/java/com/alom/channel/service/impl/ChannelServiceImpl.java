@@ -101,7 +101,7 @@ public class ChannelServiceImpl implements ChannelService {
                 .channelId(channel.getId())
                 .channelName(channel.getName())
                 .content(content)
-                .sender(sender)
+                .senderNickname(sender)
                 .timestamp(LocalDateTime.now())
                 .build();
         
