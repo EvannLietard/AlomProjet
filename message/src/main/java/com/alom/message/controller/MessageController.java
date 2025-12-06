@@ -65,12 +65,4 @@ public class MessageController {
         List<MessageDTO> messages = messageService.getMessagesByUserIdAndStatus(userId, status);
         return ResponseEntity.ok(messages);
     }
-
-    /**
-     * Health check endpoint
-     */
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Message service is running");
-    }
 }

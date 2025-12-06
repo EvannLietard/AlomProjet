@@ -58,12 +58,4 @@ public class GatewayController {
         
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/health")
-    public ResponseEntity<Map<String, String>> health() {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "UP");
-        response.put("timestamp", Instant.now().toString());
-        return ResponseEntity.ok(response);
-    }
 }

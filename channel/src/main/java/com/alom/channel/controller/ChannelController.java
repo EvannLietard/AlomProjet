@@ -114,12 +114,4 @@ public class ChannelController {
         channelService.sendMessageToChannel(channelId, request.getContent(), request.getSender());
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
-    
-    /**
-     * Health check endpoint
-     */
-    @GetMapping("/health")
-    public ResponseEntity<String> health() {
-        return ResponseEntity.ok("Channel service is running");
-    }
 }

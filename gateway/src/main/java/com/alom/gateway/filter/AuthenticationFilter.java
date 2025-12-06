@@ -67,7 +67,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     
     private boolean isAuthRequired(String path) {
         return !path.equals("/") 
-                && !path.equals("/health")
                 && !path.startsWith("/auth/register")
                 && !path.startsWith("/auth/login");
     }
