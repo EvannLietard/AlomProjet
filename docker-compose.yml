@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # MongoDB pour le service Auth
   mongodb-auth:
